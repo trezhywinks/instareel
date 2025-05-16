@@ -1,8 +1,12 @@
-# Use the Node.js base image
+# Use a Node.js base image
 FROM node:16
 
 # Install yt-dlp dependencies
-RUN apt-get update && apt-get install -y python3-pip ffmpeg
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    ffmpeg \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install yt-dlp
 RUN pip3 install -U yt-dlp
@@ -10,14 +14,17 @@ RUN pip3 install -U yt-dlp
 # Set the working directory
 WORKDIR /app
 
-# Copy the application code into the container
-COPY . .
+# Copy package.json and package-lock.json first (para cache de dependências)
+COPY package*.json ./
 
-# Install Node.js application dependencies
+# Install dependencies
 RUN npm install
 
-# Expose the port on which the application will run
+# Copy the rest of the application
+COPY . .
+
+# Expose the port your app runs on
 EXPOSE 3000
 
-# Set the command to run the application
+# Run the application
 CMD ["npm", "start"]
