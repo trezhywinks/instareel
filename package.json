@@ -4,12 +4,15 @@
   "description": "",
   "main": "insta.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node insta.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+       "postinstall": "pip install yt-dlp"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "uuid": "^11.1.0"
   }
 }

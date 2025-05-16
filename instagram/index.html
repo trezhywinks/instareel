@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download - Rell Instagram</title>
+    <style>
+*{
+margin:0; padding:0;}
+
+:root {
+ --sam: "SF Pro Text", "SF Pro Icons", system, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", "Ubuntu", "Cantarell", "Fira Sans", sans-serif;
+ --color-whats: #a333e4;
+}
+
+body {
+    font-size: 15pt;
+    background: #121212;
+    color: #fff;
+    font-family: var(--sam);
+    font-weight: 300;
+}
+
+     input{
+    background: transparent;
+    outline: none;
+    border: 2px solid #29292829;
+    font-family: var(--sam);
+    font-size: 20px;
+    border-radius: 10px;
+    color: whitesmoke;
+    width: 100%;
+    padding: 15px;
+    transition: 0.5s;
+}
+input:focus{
+    transition: 0.5s;
+    border: 2px solid #3193e4;
+}
+
+
+        input[type="text"] {
+            width: 90%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            width: 70%;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white; font-family: var(--sam);
+            border: none;
+        }
+        button:hover {
+            background-color: #45a049;
+        } .mob{width: 670px; margin: 0 auto 10px}
+
+@media(max-width: 999px){
+.mob{width: 90%}
+}
+#ui{
+display: none;
+}
+
+    </style>
+</head>
+<body>
+<div class="mob">
+    <h1>Download your Instagram Reel Video</h1>
+    <p>Enter Reel URL to start download</p><br>
+<center>
+    <input type="text" id="url" placeholder="Paste Instagram Reel URL here"><br>
+    <button onclick="baixarVideo()">Download</button><br>
+<span id="ui"  style="font-size: 14px; color: red; font-weight: 500;">Please enter a valid URL.</span>
+</div>
+</center>
+    <script>
+        function baixarVideo() {
+            const url = document.getElementById('url').value;
+
+            if (!url) {
+              alert("Please enter a valid URL.");
+                return;
+            }
+
+            fetch(`/download?url=${encodeURIComponent(url)}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    } else {
+                        throw new Error('Failed to download video');
+                    }
+                })
+                .then(blob => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'video.mp4';
+                    link.click();
+                })
+                .catch(error => {
+                    alert(error.message);
+                });
+        }
+
+    </script>
+</body>
+</html>
