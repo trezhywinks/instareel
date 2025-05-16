@@ -77,6 +77,16 @@ display: none;
     <button onclick="baixarVideo()">Download</button><br>
 <span id="ui"  style="font-size: 14px; color: red; font-weight: 500;">Please enter a valid URL.</span>
 </div>
+    <script>
+        document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) || 
+        (e.ctrlKey && e.key === 'U')) {
+      e.preventDefault();
+    }
+  });
+    </script>
 </center>
     <script>
         function baixarVideo() {
