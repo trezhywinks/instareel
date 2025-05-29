@@ -3,53 +3,64 @@ const { v4: uuidv4 } = require('uuid');
 const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+
 const app = express();
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, 'instagram')));
+app.use(express.static('instagram'));
 
-app.get('/download', (req, res) => {
-    const url = req.query.url;
-    
+app.use(express.static(path.join(__dirname, 'downloads')));
+
+// Função genérica para baixar vídeo
+function downloadVideo(url, folder, res) {
     if (!url) {
-        return res.status(400).json({ error: 'URL not provided' });
+        return res.status(400).json({ error: 'URL não fornecida' });
     }
 
-    //const videoId = uuidv4();
-         const videoFileName = `${uuidv4()}.mp4`; 
-    const videoPath = path.join('/tmp', videoFileName); 
-    //const videoFileName = `${videoId}.mp4`;
-    //const videoPath = path.join(__dirname, 'downloads', videoFileName);
+    const videoFileName = `${uuidv4()}.mp4`;
+    const videoPath = path.join(__dirname, 'downloads', folder);
 
-    if (!fs.existsSync(path.join(__dirname, 'downloads'))) {
-        fs.mkdirSync(path.join(__dirname, 'downloads'));
+    if (!fs.existsSync(videoPath)) {
+        fs.mkdirSync(videoPath, { recursive: true });
     }
 
+    const fullVideoPath = path.join(videoPath, videoFileName);
 
-exec(`python3 -m yt_dlp -f best -o "${videoPath}" ${url}`, (error, stdout, stderr) => {
-    if (error) {
-        console.error(`Error downloading video: ${error.message}`);
-        return res.status(500).json({ error: 'Erro ao baixar o vídeo' });
-    }
-
-    console.log(`yt-dlp stdout: ${stdout}`);
-    console.error(`yt-dlp stderr: ${stderr}`);
-
-    res.download(videoPath, (err) => {
-        if (err) {
-            console.error('Erro no download:', err);
+    exec(`python3 -m yt_dlp -f best -o "${fullVideoPath}" ${url}`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Erro ao baixar vídeo: ${error.message}`);
+            return res.status(500).json({ error: 'Erro ao baixar o vídeo' });
         }
 
-        fs.unlink(videoPath, (unlinkErr) => {
-            if (unlinkErr) {
-                console.error('Error deleting temporary file:', unlinkErr);
+        console.log(`yt-dlp stdout: ${stdout}`);
+        console.error(`yt-dlp stderr: ${stderr}`);
+
+        res.download(fullVideoPath, (err) => {
+            if (err) {
+                console.error('Erro ao enviar o arquivo:', err);
             }
+
+            fs.unlink(fullVideoPath, (unlinkErr) => {
+                if (unlinkErr) {
+                    console.error('Erro ao deletar o arquivo:', unlinkErr);
+                }
+            });
         });
     });
+}
+
+// Endpoint para Instagram
+app.get('/download/instagram', (req, res) => {
+    const url = req.query.url;
+    downloadVideo(url, 'instagram', res);
 });
 
+// Endpoint para YouTube
+app.get('/download/youtube', (req, res) => {
+    const url = req.query.url;
+    downloadVideo(url, 'youtube', res);
 });
 
 app.listen(port, () => {
-    console.log(`Server running  http://localhost:${port}`);
+    console.log(`Servidor rodando em http://localhost:${port}`);
 });
