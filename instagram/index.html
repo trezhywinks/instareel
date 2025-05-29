@@ -164,7 +164,7 @@ window.location.href = "https://wa.me?text=Hello%20user"
 <p style="font-size: 14px; opacity: 0.6; color: #fff;">api download youtube videos.</p>
 <script>
 document.getElementById('apiyou').addEventListener('click', () => {
-window.location.href = "http://localhost:3000/download/youtube?url="
+window.location.href = "https://instareel-ps4k.onrender.com/download/youtube?url="
 })
 </script>
 </div>
@@ -173,7 +173,7 @@ window.location.href = "http://localhost:3000/download/youtube?url="
 <p style="font-size: 14px; opacity: 0.6; color: #fff;">api download instagram videos.</p>
 <script>
 document.getElementById('apiinsta').addEventListener('click', () => {
-window.location.href = "http://localhost:3000/download/instagram?url="
+window.location.href = "https://instareel-ps4k.onrender.com/download/instagram?url="
 })
 </script>
 
@@ -248,7 +248,7 @@ document.querySelector('.home').addEventListener('click', () => {
                 return;
             }
 
-            const endpoint = `http://localhost:3000/download/${tipo}?url=${encodeURIComponent(url)}`;
+            const endpoint = `https://instareel-ps4k.onrender.com/download/${tipo}?url=${encodeURIComponent(url)}`;
 
             fetch(endpoint)
                 .then(response => {
